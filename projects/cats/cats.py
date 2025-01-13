@@ -38,6 +38,10 @@ def pick(paragraphs, select, k):
     """
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    result=[i for i in paragraphs if select(i)]
+    if k<len(result):
+        return result[k]
+    return ''
     # END PROBLEM 1
 
 
@@ -58,6 +62,13 @@ def about(subject):
 
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    def about_obj(string):
+        objs=split(remove_punctuation(lower(string)))
+        for obj in objs:
+            if obj in subject:
+                return True
+        return False
+    return about_obj
     # END PROBLEM 2
 
 
@@ -88,6 +99,20 @@ def accuracy(typed, source):
     source_words = split(source)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    if len(typed_words)==0:
+        if len(source_words)==0:
+            return 100.0
+        else:
+            return 0.0
+    match=0
+    for i in range(len(typed_words)):
+        if i>=len(source_words):
+            break
+        elif typed_words[i]==source_words[i]:
+            match+=1
+        else:
+            continue
+    return match/len(typed_words)*100
     # END PROBLEM 3
 
 
@@ -106,6 +131,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, "Elapsed time must be positive"
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return len(typed)/5*(60/elapsed)
     # END PROBLEM 4
 
 
