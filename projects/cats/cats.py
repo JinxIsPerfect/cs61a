@@ -193,6 +193,19 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if typed_word in word_list:
+        return typed_word
+    else:
+        min_score=limit+1
+        for word in word_list:
+            score=diff_function(typed_word,word,limit)
+            if score<min_score:
+                min_score=score
+                min_word=word
+        if min_score>limit:
+            return typed_word
+        else:
+            return min_word
     # END PROBLEM 5
 
 
@@ -219,7 +232,16 @@ def furry_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    if limit<0:
+        return limit+1
+    if typed=='' or source=='':
+        return abs(len(typed)-len(source))
+    if typed[0]==source[0]:
+        diff=furry_fixes(typed[1:],source[1:],limit)
+        return diff
+    else:
+        diff=furry_fixes(typed[1:],source[1:],limit-1)
+        return diff+1
     # END PROBLEM 6
 
 
@@ -240,22 +262,26 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ___________: # Base cases should go here, you may add more base cases as needed.
+    if limit<0:
+        return limit+1
+    if typed=='' or source=='': # Base cases should go here, you may add more base cases as needed.
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return abs(len(source) - len(typed)) if abs(len(source) - len(typed))<=limit else limit+1
         # END
     # Recursive cases should go below here
-    if ___________: # Feel free to remove or add additional cases
+    if typed[-1]==source[-1]: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return minimum_mewtations(typed[:-1],source[:-1],limit)
         # END
     else:
-        add = ... # Fill in these lines
-        remove = ...
-        substitute = ...
+        add = minimum_mewtations(typed[:-1],source,limit-1)+1 # Fill in these lines
+        remove = minimum_mewtations(typed,source[:-1],limit-1)+1
+        substitute = minimum_mewtations(typed[:-1],source[:-1],limit-1)+1
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return min(limit+1,add,remove,substitute)
         # END
 
 
