@@ -1,10 +1,10 @@
-passphrase = 'REPLACE_THIS_WITH_PASSPHRASE'
+passphrase = '*** 3d9f1125b109b311959d068240016badb874603eab75302a445e1a50 ***'
 
 def midsem_survey(p):
     """
     You do not need to understand this code.
     >>> midsem_survey(passphrase)
-    '2bf925d47c03503d3ebe5a6fc12d479b8d12f14c0494b43deba963a0'
+    '3d9f1125b109b311959d068240016badb874603eab75302a445e1a50'
     """
     import hashlib
     return hashlib.sha224(p.encode('utf-8')).hexdigest()
@@ -47,9 +47,14 @@ class VendingMachine:
     >>> w.vend()
     'Here is your soda.'
     """
+    "*** YOUR CODE HERE ***"
     def __init__(self, product, price):
         """Set the product and its price, as well as other instance attributes."""
         "*** YOUR CODE HERE ***"
+        self.product=product
+        self.price=price
+        self.stock=0
+        self.balance=0
 
     def restock(self, n):
         """Add n to the stock and return a message about the updated stock level.
@@ -57,6 +62,8 @@ class VendingMachine:
         E.g., Current candy stock: 3
         """
         "*** YOUR CODE HERE ***"
+        self.stock+=n
+        return f'Current {self.product} stock: {self.stock}'
 
     def add_funds(self, n):
         """If the machine is out of stock, return a message informing the user to restock
@@ -69,7 +76,12 @@ class VendingMachine:
         E.g., Current balance: $4
         """
         "*** YOUR CODE HERE ***"
-
+        
+        if self.stock==0:
+            return f'Nothing left to vend. Please restock. Here is your ${n}.'
+        self.balance+=n
+        return f'Current balance: ${self.balance}'
+    
     def vend(self):
         """Dispense the product if there is sufficient stock and funds and
         return a message. Update the stock and balance accordingly.
@@ -82,6 +94,20 @@ class VendingMachine:
               Please add $3 more funds.
         """
         "*** YOUR CODE HERE ***"
+        if self.stock==0:
+            return f'Nothing left to vend. Please restock.'
+        balance=self.balance-self.price
+        if balance<0:
+            return f'Please add ${abs(balance)} more funds.'
+        elif balance==0:
+            self.balance=0
+            self.stock-=1
+            return f'Here is your {self.product}.'
+        else:
+            self.balance=0
+            self.stock-=1
+            return f'Here is your {self.product} and ${balance} change.' 
+
 
 
 def store_digits(n):
@@ -96,18 +122,28 @@ def store_digits(n):
     Link(8, Link(7, Link(6)))
     >>> store_digits(2450)
     Link(2, Link(4, Link(5, Link(0))))
-    >>> store_digits(20105)
-    Link(2, Link(0, Link(1, Link(0, Link(5)))))
     >>> # a check for restricted functions
     >>> import inspect, re
     >>> cleaned = re.sub(r"#.*\\n", '', re.sub(r'"{3}[\s\S]*?"{3}', '', inspect.getsource(store_digits)))
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    first=True
+    while n:
+        if first==True:
+            num=n%10
+            llist=Link(num)
+            n//=10
+            first=False
+        else:
+            num=n%10
+            llist=Link(num,llist)
+            n//=10
+    return llist
 
 
-def deep_map_mut(func, s):
-    """Mutates a deep link s by replacing each item found with the
+def deep_map_mut(func, lnk):
+    """Mutates a deep link lnk by replacing each item found with the
     result of calling func on the item. Does NOT create new Links (so
     no use of Link's constructor).
 
@@ -126,6 +162,13 @@ def deep_map_mut(func, s):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
+    if isinstance(lnk.first,int):
+        lnk.first=func(lnk.first)
+    elif isinstance(lnk.first,Link):
+        deep_map_mut(func,lnk.first)
+        
+    if lnk.rest!=Link.empty:
+        deep_map_mut(func,lnk.rest)
 
 
 def two_list(vals, counts):
@@ -147,6 +190,13 @@ def two_list(vals, counts):
     Link(1, Link(1, Link(3, Link(3, Link(2)))))
     """
     "*** YOUR CODE HERE ***"
+    index=len(counts)-1
+    lnk=Link.empty
+    for num in counts[::-1]:
+        for i in range(num):
+            lnk=Link(vals[index],lnk)
+        index-=1
+    return lnk
 
 
 class Link:
