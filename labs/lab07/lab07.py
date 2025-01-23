@@ -39,6 +39,12 @@ class Account:
         """Return the number of years until balance would grow to amount."""
         assert self.balance > 0 and amount > 0 and self.interest > 0
         "*** YOUR CODE HERE ***"
+        count = 0
+        fund=self.balance
+        while fund<amount:
+            fund*=(1+self.interest)
+            count+=1
+        return count
 
 
 class FreeChecking(Account):
@@ -68,6 +74,24 @@ class FreeChecking(Account):
     free_withdrawals = 2
 
     "*** YOUR CODE HERE ***"
+    def __init__(self, holder):
+        self.balance = 20
+        self.holder = holder
+
+    def withdraw(self,amount):
+        if self.free_withdrawals==0:
+            if self.balance<self.withdraw_fee+amount:
+                return "Insufficient funds"
+            else:
+                self.balance-=self.withdraw_fee+amount
+                return self.balance
+        else:
+            self.free_withdrawals-=1
+            if self.balance<amount:
+                return "Insufficient funds"
+            else:
+                self.balance-=amount
+                return self.balance
 
 
 def duplicate_link(s, val):
@@ -87,6 +111,13 @@ def duplicate_link(s, val):
     Link(1, Link(2, Link(2, Link(2, Link(2, Link(3))))))
     """
     "*** YOUR CODE HERE ***"
+    while s!=Link.empty:
+        if s.first==val:
+            temp=s.rest
+            s.rest=Link(val,temp)
+            s=temp
+        else:
+            s=s.rest
 
 
 class Link:
