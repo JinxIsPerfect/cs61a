@@ -12,6 +12,11 @@ def cumulative_mul(t):
     Tree(5040, [Tree(60, [Tree(3), Tree(4), Tree(5)]), Tree(42, [Tree(7)])])
     """
     "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        return 
+    for branch in t.branches:
+        cumulative_mul(branch)
+        t.label*=branch.label
 
 
 def prune_small(t, n):
@@ -31,11 +36,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
+    while len(t.branches)>n:
+        largest = max(t.branches, key=lambda b: b.label)
+        t.branches.remove(largest)
+    for branch in t.branches:
+        prune_small(branch,n)
 
 
 def delete(t, x):
